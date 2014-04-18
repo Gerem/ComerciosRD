@@ -1,5 +1,10 @@
 package com.comerciosrd.threads;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -14,17 +19,10 @@ import com.comerciosrd.adapters.ClientsGridAdapter;
 import com.comerciosrd.map.R;
 import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.ComerciosRDCacheUtils;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.ComerciosRDUtils;
-import com.comerciosrd.utils.Validations;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 	private Activity context;
@@ -34,32 +32,45 @@ public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 	private GridView gridView;
 	private ClientsGridAdapter customGridAdapter;
 	private Long idCategory;
-
-	
-	private final String ID_CLIENTE_PK = "ID_CLIENTE_PK";
-	private final String NOMBRE_CLIENTE = "NOMBRE_CLIENTE";
-	private final String LOGO = "LOGO";
-	
+	private String categoryFileName;
+	private boolean notOnlineNotCache=false;
 	
 	public SearchClientsTask(Activity context, LinearLayout progressBarLL, GridView gridView, Long idCategory){
 		this.context = context;
 		this.progressBarLL = progressBarLL;
 		this.gridView = gridView;
 		this.idCategory = idCategory;
+		this.categoryFileName = "category_" + this.idCategory;
 	}
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		try {
-			data = (ArrayList<Cliente>) ComerciosRDCacheUtils.readObject(context, ComerciosRDConstants.API_CATEGORY_MODULE + idCategory);
-			if(Validations.ValidateIsNull(data)){
-				JSONArray jsonArray = CallServices.callService(ComerciosRDConstants.API_URL
-												   + ComerciosRDConstants.API_CLIENT_MODULE							
-												   + "/?format=json&idCategoria=" + idCategory);
-				data = doCliente(jsonArray);
-				
-			}						
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(Utils.existFile(categoryFileName, context)){						
+			//Searching data in cache
+			data = (ArrayList<Cliente>) Utils.getArrayListFromCache(categoryFileName, context);			
+		}else if(Utils.isOnline(context)){
+			try {
+				JSONArray jsonArray = CallServices
+						.callService(Constants.API_URL
+								+ Constants.API_CLIENT_MODULE							
+								+ "/?format=json&idCategoria=" + idCategory +"&idEstado=1");
+				data = new ArrayList<Cliente>();
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject obj = jsonArray.getJSONObject(i);
+					Cliente cliente = new Cliente();
+					cliente.setIdClientePk(obj.getLong("ID_CLIENTE_PK"));
+					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
+					//Getting LOGO
+					String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+					cliente.setLogo(Utils.drawableFromUrl(clientLogoUrl));
+					
+					data.add(cliente);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			notOnlineNotCache = true;
+			
 		}
 		return null;
 	}
@@ -71,9 +82,13 @@ public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 	}
 	@Override
 	protected void onPostExecute(Void result) {  
+		if(notOnlineNotCache){
+			Utils.showToastMessage(context, "Necesita de una conexión a internet para cargar.");
+			return;
+		}
+		Utils.saveArrayListToMemCache(categoryFileName, data, context);
 		customGridAdapter = new ClientsGridAdapter(context, R.layout.row_grid, data);
 
-		ComerciosRDCacheUtils.writeObject(context, ComerciosRDConstants.API_CATEGORY_MODULE + idCategory, data);
 	    // SET THE ADAPTER TO THE LISTVIEW
 	    gridView.setAdapter(customGridAdapter);
 	    gridView.setVisibility(View.VISIBLE);
@@ -89,20 +104,5 @@ public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 		});
 	    // HIDE THE SPINNER AFTER LOADING FEEDS
 	    progressBarLL.setVisibility(View.GONE);
-	}
-	public ArrayList<Cliente> doCliente(JSONArray jsonArray) throws JSONException, IOException{
-		ArrayList<Cliente> listaCliente = new ArrayList<Cliente>();
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject obj = jsonArray.getJSONObject(i);
-			Cliente cliente = new Cliente();
-			cliente.setIdClientePk(obj.getLong(ID_CLIENTE_PK));
-			cliente.setNombreCliente(obj.getString(NOMBRE_CLIENTE));
-			//Getting LOGO
-			String clientLogoUrl = ComerciosRDConstants.API_CLIENT_LOGO_PATH + obj.getString(LOGO); 
-			cliente.setLogo(ComerciosRDUtils.drawableFromUrl(clientLogoUrl));
-			
-			listaCliente.add(cliente);
-		}
-		return listaCliente;
 	}
 }

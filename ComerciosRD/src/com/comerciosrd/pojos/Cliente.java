@@ -2,57 +2,76 @@ package com.comerciosrd.pojos;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class Cliente implements Serializable{
+public class Cliente implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private Long idClientePk;
-	
+
 	private String nombreCliente;
-	
-	private Bitmap logo;
-	
+
+	transient Bitmap logo;
+
 	public Long getIdClientePk() {
 		return idClientePk;
 	}
+
 	public void setIdClientePk(Long idClientePk) {
 		this.idClientePk = idClientePk;
 	}
+
 	public String getNombreCliente() {
 		return nombreCliente;
 	}
+
 	public void setNombreCliente(String nombreCliente) {
 		this.nombreCliente = nombreCliente;
 	}
+
 	public Bitmap getLogo() {
 		return logo;
 	}
+
 	public void setLogo(Bitmap logo) {
 		this.logo = logo;
 	}
-	
-	// Converts the Bitmap into a byte array for serialization
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        logo.compress(Bitmap.CompressFormat.PNG, 0, byteStream);
-        byte bitmapBytes[] = byteStream.toByteArray();
-        out.write(bitmapBytes, 0, bitmapBytes.length);
-    }
 
-    // Deserializes a byte array representing the Bitmap and decodes it
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        int b;
-        while((b = in.read()) != -1)
-            byteStream.write(b);
-        byte bitmapBytes[] = byteStream.toByteArray();
-        logo = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
-    }
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+		// This will serialize all fields that you did not mark with 'transient'
+		// (Java's default behaviour)
+		oos.defaultWriteObject();
+		// Now, manually serialize all transient fields that you want to be
+		// serialized
+		if (logo != null) {
+			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+			boolean success = logo.compress(Bitmap.CompressFormat.PNG, 100,
+					byteStream);
+			if (success) {
+				oos.writeObject(byteStream.toByteArray());
+			}
+		}
+	}
+
+	private void readObject(ObjectInputStream ois) throws IOException,
+			ClassNotFoundException {
+		// Now, all again, deserializing - in the SAME ORDER!
+		// All non-transient fields
+		ois.defaultReadObject();
+		// All other fields that you serialized
+		byte[] image = (byte[]) ois.readObject();
+		if (image != null && image.length > 0) {
+			logo = BitmapFactory.decodeByteArray(image, 0, image.length);
+		}
+	}
+
 }

@@ -1,5 +1,11 @@
 package com.comerciosrd.threads;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -10,19 +16,9 @@ import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.pojos.Provincia;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.ComerciosRDCacheUtils;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.ComerciosRDUtils;
-import com.comerciosrd.utils.Validations;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
 import com.google.android.gms.maps.GoogleMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressLint("NewApi")
 public class SetLocationTask extends AsyncTask<Void, Void, Void> {
@@ -50,64 +46,66 @@ public class SetLocationTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... params) {
+		if(Utils.existFile(query, context)){						
+			//Searching data in cache
+			locations = (ArrayList<Localidad>) Utils.getArrayListFromCache(query, context);			
+		}else{	
 		try {
-			locations = (ArrayList<Localidad>) ComerciosRDCacheUtils.readObject(context, ComerciosRDConstants.API_CLIENT_MODULE + query);
-			if(Validations.ValidateIsNull(locations)){
-				JSONArray jsonArray = CallServices.callService(ComerciosRDConstants.API_URL
-													+ ComerciosRDConstants.API_LOCATION_MODULE							
-													+ "/?format=json&idCliente=" + query);
-				doLocationList(jsonArray);
+						
+				JSONArray jsonArray = CallServices
+						.callService(Constants.API_URL
+								+ Constants.API_LOCATION_MODULE
+								+ "/?format=json&idCliente=" + query);
+	
+				locations = new ArrayList<Localidad>();
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject obj = jsonArray.getJSONObject(i);
+	
+					Localidad location = new Localidad();
+	
+					Cliente cliente = new Cliente();
+					cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
+					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
+					
+					String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+					cliente.setLogo(Utils.drawableFromUrl(clientLogoUrl));
+					
+					location.setCliente(cliente);
+	
+					Provincia provincia = new Provincia();
+					provincia.setIdProvinciaPk(obj.getLong("ID_PROVINCIA_PK"));
+					provincia.setNombreProvincia(obj.getString("NOMBRE_PROVINCIA"));
+	
+					Categoria categoria = new Categoria();
+					categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
+					
+					location.setProvincia(provincia);
+					location.setCategoria(categoria);
+					
+					//Informacion general de localidad
+					location.setIdLocalidadPk(obj.getLong("ID_LOCALIDAD_PK"));				
+					location.setLatitud(obj.getDouble("LATITUD"));
+					location.setLongitud(obj.getDouble("LONGITUD"));
+					location.setDireccion(obj.getString("DIRECCION"));
+					location.setDescripcion(obj.getString("DESCRIPCION"));
+					location.setTelefono(obj.getString("TELEFONO"));
+					location.setEmail(obj.getString("EMAIL"));
+					locations.add(location);
+				}
+	
 				
-			}			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}	
 		return null;
 	}
 	@Override
     protected void onPostExecute(Void result) {
 		googleMap.clear();
-		ComerciosRDUtils.setNewLocationToMap(googleMap, locations, context);
+		Utils.setNewLocationToMap(googleMap, locations, context);
 //		menuItem.collapseActionView();
 //	    menuItem.setActionView(null);
     }
-	public void doLocationList(JSONArray jsonArray) throws JSONException, IOException{
-		String clientLogoUrl = null;
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject obj = jsonArray.getJSONObject(i);
 
-			Localidad location = new Localidad();
-
-			Cliente cliente = new Cliente();
-			cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
-			cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
-			
-			if(Validations.ValidateIsNull(clientLogoUrl))
-				clientLogoUrl = ComerciosRDConstants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
-			
-			cliente.setLogo(ComerciosRDUtils.drawableFromUrl(clientLogoUrl));
-			
-			location.setCliente(cliente);
-
-			Provincia provincia = new Provincia();
-			provincia.setIdProvinciaPk(obj.getLong("ID_PROVINCIA_PK"));
-			provincia.setNombreProvincia(obj.getString("NOMBRE_PROVINCIA"));
-
-			Categoria categoria = new Categoria();
-			categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
-			
-			location.setProvincia(provincia);
-			location.setCategoria(categoria);
-			
-			//Informacion general de localidad
-			location.setIdLocalidadPk(obj.getLong("ID_LOCALIDAD_PK"));				
-			location.setLatitud(obj.getDouble("LATITUD"));
-			location.setLongitud(obj.getDouble("LONGITUD"));
-			location.setDireccion(obj.getString("DIRECCION"));
-			location.setDescripcion(obj.getString("DESCRIPCION"));
-			location.setTelefono(obj.getString("TELEFONO"));
-			location.setEmail(obj.getString("EMAIL"));
-			locations.add(location);
-		}
-	}
 }

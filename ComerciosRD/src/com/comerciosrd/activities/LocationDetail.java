@@ -13,9 +13,11 @@ import android.widget.ListView;
 
 import com.comerciosrd.adapters.LocationDetailAdapter;
 import com.comerciosrd.map.R;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.ComerciosRDUtils;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
+
+
 
 @SuppressLint("NewApi")
 public class LocationDetail extends Activity {
@@ -27,29 +29,29 @@ public class LocationDetail extends Activity {
 		setContentView(R.layout.list_activity);
 		Bundle extras = getIntent().getExtras();
 		setView(extras);
-		ComerciosRDUtils.setActionBarBackground(getActionBar(),ComerciosRDConstants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),Constants.MAIN_HEADER_COLOR);
 		
 	}
 
 	public void setView(Bundle extras) {
-		if (Validations.ValidateIsNotNull(extras)) {
+		if (Validations.validateIsNotNull(extras)) {
 			//Consiguiendo campos..			
-			String nombreCliente = extras.getString(ComerciosRDConstants.CLIENT_NAME_FIELD);
-			String nombreCategoria = extras.getString(ComerciosRDConstants.CATEGORY_NAME_FIELD);
-			String email = extras.getString(ComerciosRDConstants.EMAIL_FIELD);
-			String descripcion = extras.getString(ComerciosRDConstants.DESCRIPTION_FIELD);
+			String nombreCliente = extras.getString(Constants.CLIENT_NAME_FIELD);
+			String nombreCategoria = extras.getString(Constants.CATEGORY_NAME_FIELD);
+			String email = extras.getString(Constants.EMAIL_FIELD);
+			String descripcion = extras.getString(Constants.DESCRIPTION_FIELD);
 			
-			final Double latitud = extras.getDouble(ComerciosRDConstants.LATITUDE_FIELD);
-			final Double longitud = extras.getDouble(ComerciosRDConstants.LONGITUDE_FIELD);
+			final Double latitud = extras.getDouble(Constants.LATITUDE_FIELD);
+			final Double longitud = extras.getDouble(Constants.LONGITUDE_FIELD);
 			
-			String telefono = extras.getString(ComerciosRDConstants.PHONE_FIELD);
-			String direccion = extras.getString(ComerciosRDConstants.ADDRESS_FIELD);
+			String telefono = extras.getString(Constants.PHONE_FIELD);
+			String direccion = extras.getString(Constants.ADDRESS_FIELD);
 			
 			String categoria = nombreCategoria;
 			final String[] content = { descripcion, telefono,
 					direccion, email, categoria };
 			
-			ComerciosRDUtils.setActionBarName(getActionBar(), nombreCliente);
+			Utils.setActionBarName(getActionBar(), nombreCliente);
 
 			LocationDetailAdapter adapter = new LocationDetailAdapter(LocationDetail.this,content);
 			list = (ListView) findViewById(R.id.list);
@@ -64,16 +66,12 @@ public class LocationDetail extends Activity {
 						    startActivity(callIntent);
 						    break;
 					case 3:
-							String email = content[position].toString();
-							
-							if(!email.equals(ComerciosRDConstants.N_A_FIELD)){
-								Intent sendIntent = new Intent(Intent.ACTION_SEND);
-								sendIntent.setType("plain/text");
-								sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { content[position].toString() });
-								sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Asunto");
-								sendIntent.putExtra(Intent.EXTRA_TEXT, "Texto");
-								startActivity(Intent.createChooser(sendIntent, ""));
-							}
+							Intent sendIntent = new Intent(Intent.ACTION_SEND);
+							sendIntent.setType("plain/text");
+							sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { content[position].toString() });
+							sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Asunto");
+							sendIntent.putExtra(Intent.EXTRA_TEXT, "Texto");
+							startActivity(Intent.createChooser(sendIntent, ""));
 							break;
 					case 2:
 							Intent navigation = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" +latitud+","+longitud));
@@ -100,7 +98,7 @@ public class LocationDetail extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.detail_menu, menu);
+		getMenuInflater().inflate(R.menu.back_menu, menu);
 		return true;
 	}
 	

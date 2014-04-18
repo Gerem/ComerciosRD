@@ -1,5 +1,10 @@
 package com.comerciosrd.threads;
 
+
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,12 +21,10 @@ import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.pojos.Provincia;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.ComerciosRDUtils;
-import com.comerciosrd.utils.Validations;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 
 @SuppressLint("NewApi")
 public class LocationDetailTask extends AsyncTask<Void, Void, Void> {
@@ -29,9 +32,6 @@ public class LocationDetailTask extends AsyncTask<Void, Void, Void> {
 	private final Double lat;
 	private final Double lon;
 	private Localidad location;
-	private final String ID_CLIENTE_FK = "ID_CLIENTE_FK";
-	private final String NOMBRE_CLIENTE = "NOMBRE_CLIENTE";
-	private final String LOGO = "LOGO";
 	//private final MenuItem menuItem;
 	private ListView list;
 	public LocationDetailTask(Activity context,Double lat,Double lon){
@@ -51,17 +51,17 @@ public class LocationDetailTask extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... params) {
 			try {
 				JSONArray jsonArray = CallServices
-						.callService(ComerciosRDConstants.API_URL
-								+ ComerciosRDConstants.API_LOCATION_MODULE
+						.callService(Constants.API_URL
+								+ Constants.API_LOCATION_MODULE
 								+ "/?format=json&latitud=" + lat + "&longitud="+lon);
 				location = new Localidad();
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject obj = jsonArray.getJSONObject(i);
 					Cliente cliente = new Cliente();
-					cliente.setIdClientePk(obj.getLong(ID_CLIENTE_FK));
-					cliente.setNombreCliente(obj.getString(NOMBRE_CLIENTE));
-					String clientLogoUrl = ComerciosRDConstants.API_CLIENT_LOGO_PATH + obj.getString(LOGO); 
-					cliente.setLogo(ComerciosRDUtils.drawableFromUrl(clientLogoUrl));
+					cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
+					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
+					String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+					cliente.setLogo(Utils.drawableFromUrl(clientLogoUrl));
 					
 					location.setCliente(cliente);
 
@@ -82,10 +82,7 @@ public class LocationDetailTask extends AsyncTask<Void, Void, Void> {
 					location.setDireccion(obj.getString("DIRECCION"));
 					location.setDescripcion(obj.getString("DESCRIPCION"));
 					location.setTelefono(obj.getString("TELEFONO"));
-					if(Validations.ValidateIsNull(obj.getString("EMAIL")))
-						location.setEmail("N/A");
-					else
-						location.setEmail(obj.getString("EMAIL"));
+					location.setEmail(obj.getString("EMAIL"));
 					
 				}
 			} catch (Exception e) {
@@ -98,7 +95,7 @@ public class LocationDetailTask extends AsyncTask<Void, Void, Void> {
 	@Override
     protected void onPostExecute(Void result) {
 		final String[] content = { location.getDescripcion(), location.getTelefono(),location.getDireccion(), location.getEmail()};		
-		ComerciosRDUtils.setActionBarName(context.getActionBar(), location.getCliente().getNombreCliente());
+		Utils.setActionBarName(context.getActionBar(), location.getCliente().getNombreCliente());
 		LocationDetailAdapter adapter = new LocationDetailAdapter(context,content);
 		list = (ListView) context.findViewById(R.id.list);
 		list.setAdapter(adapter);

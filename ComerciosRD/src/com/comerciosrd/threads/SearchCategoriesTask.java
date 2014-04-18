@@ -1,5 +1,7 @@
 package com.comerciosrd.threads;
 
+
+
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -19,9 +21,10 @@ import com.comerciosrd.adapters.CategoryGridAdapter;
 import com.comerciosrd.map.R;
 import com.comerciosrd.pojos.Categoria;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.ComerciosRDCacheUtils;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.Validations;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
+
+
 
 public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 	private Activity context;
@@ -30,7 +33,7 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 	private ArrayList<Categoria> data;
 	private GridView gridView;
 	private CategoryGridAdapter customGridAdapter;
-
+	private boolean notOnlineNotCache=false;
 	public SearchCategoriesTask(Activity context, LinearLayout progressBarLL,
 			GridView gridView) {
 		this.context = context;
@@ -40,25 +43,30 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		try {
-			JSONArray jsonArray = (JSONArray) ComerciosRDCacheUtils.readObject(context, ComerciosRDConstants.API_CATEGORY_MODULE);
-			if(Validations.ValidateIsNull(jsonArray)){
-				jsonArray = CallServices.callService(ComerciosRDConstants.API_URL
-												   + ComerciosRDConstants.API_CATEGORY_MODULE
-												   + "/?format=json&indNegocios=1");
-				ComerciosRDCacheUtils.writeObject(context, ComerciosRDConstants.API_CATEGORY_MODULE, jsonArray);
+		if(Utils.existFile(Constants.CATEGORY_VIEW_NAME, context)){						
+			//Searching data in cache
+			data = (ArrayList<Categoria>) Utils.getArrayListFromCache(Constants.CATEGORY_VIEW_NAME, context);			
+		}else if(Utils.isOnline(context)){
+			try {
+				JSONArray jsonArray = CallServices
+						.callService(Constants.API_URL
+								+ Constants.API_CATEGORY_MODULE
+								+ "/?format=json&indNegocios=1");
+				data = new ArrayList<Categoria>();
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject obj = jsonArray.getJSONObject(i);
+					Categoria categoria = new Categoria();
+					categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
+					categoria.setIdCategoriaPk(obj.getLong("ID_CATEGORIA_PK"));
+					data.add(categoria);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}else{
+			notOnlineNotCache = true;
 			
-			data = new ArrayList<Categoria>();
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject obj = jsonArray.getJSONObject(i);
-				Categoria categoria = new Categoria();
-				categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
-				categoria.setIdCategoriaPk(obj.getLong("ID_CATEGORIA_PK"));
-				data.add(categoria);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -68,10 +76,17 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 	protected void onPreExecute() {
 		// SHOW THE SPINNER WHILE LOADING FEEDS
 		progressBarLL.setVisibility(View.VISIBLE);
+		gridView.setVisibility(View.GONE);
 	}
 
 	@Override
-	protected void onPostExecute(Void result) {
+	protected void onPostExecute(Void result) {	
+		if(notOnlineNotCache){
+			Utils.showToastMessage(context, "Necesita de una conexión a internet para cargar.");
+			return;
+		}
+		Utils.saveArrayListToMemCache(Constants.CATEGORY_VIEW_NAME, data, context);
+		
 		customGridAdapter = new CategoryGridAdapter(context, R.layout.row_grid,data);
 
 		// SET THE ADAPTER TO THE LISTVIEW
@@ -80,9 +95,12 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView parentView, View childView,int position, long id) {
-				Long categoryId = ((Categoria) gridView.getAdapter().getItem(position)).getIdCategoriaPk();
+				Categoria categoria = ((Categoria) gridView.getAdapter().getItem(position));
+				Long categoryId = categoria.getIdCategoriaPk();
+				String categoryName = categoria.getCategoria();
 				Intent i = new Intent(context, ClientByCategoryActivity.class);
 				i.putExtra("categoryId", categoryId);
+				i.putExtra("categoryName", categoryName);
 				//Comenzando la actividad
                 context.startActivity(i);
 			}

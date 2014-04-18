@@ -1,6 +1,12 @@
 package com.comerciosrd.pojos;
 
-public class Provincia {
+import java.io.Serializable;
+
+public class Provincia implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long idProvinciaPk;
 	private Long idPaisFk;
 	private String nombreProvincia;

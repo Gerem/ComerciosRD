@@ -13,8 +13,9 @@ import android.widget.ListView;
 
 import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SearchLocationsTask;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.ComerciosRDUtils;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
+
 
 public class ListSucursales extends Activity {
 	// CAST THE LINEARLAYOUT HOLDING THE MAIN PROGRESS (SPINNER)
@@ -31,13 +32,13 @@ public class ListSucursales extends Activity {
 
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		// Setting background
-		ComerciosRDUtils.setActionBarBackground(getActionBar(),
-				ComerciosRDConstants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),
+				Constants.MAIN_HEADER_COLOR);
 		progressBarLL = (LinearLayout) findViewById(R.id.listLayoutForCircleLoading);
 
 		Bundle extras = getIntent().getExtras();
 		clientId = extras.getLong("clienteId");
-		ComerciosRDUtils commercialMarkerUtils = new ComerciosRDUtils();
+		Utils commercialMarkerUtils = new Utils();
 		// Buscando ubicacion actual del usuario
 		double[] userLocation = commercialMarkerUtils
 				.getlocation(locationManager);
@@ -47,11 +48,6 @@ public class ListSucursales extends Activity {
 				listView, clientId, userLocation);
 		task.execute();// Executing
 
-	}
-
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 	@Override
@@ -69,6 +65,10 @@ public class ListSucursales extends Activity {
 			// Comenzando la actividad
 			startActivity(i);
 
+			break;
+		case R.id.back_from_detail:
+			super.onBackPressed();
+			
 			break;
 		default:
 			break;

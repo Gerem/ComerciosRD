@@ -37,7 +37,7 @@ public class LocationDetailAdapter extends ArrayAdapter<String> {
 		
 		txtLabel.setText(label[position]);
 		txtContent.setText(content[position]);
-		if(Validations.ValidateIsNotNull(img[position])){
+		if(Validations.validateIsNotNull(img[position])){
 			imageView.setImageResource(img[position]);
 		}
 		return rowView;

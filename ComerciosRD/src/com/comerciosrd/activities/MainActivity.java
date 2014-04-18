@@ -1,10 +1,11 @@
 package com.comerciosrd.activities;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,19 +22,15 @@ import android.widget.TextView;
 import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SetLocationTask;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.ComerciosRDConstants;
-import com.comerciosrd.utils.ComerciosRDUtils;
+import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @SuppressLint("NewApi")
 public class MainActivity extends FragmentActivity {
 	private MenuItem menuItem;
@@ -55,17 +51,17 @@ public class MainActivity extends FragmentActivity {
 	
 	public void prepareApp(){		
 		googleMap = ((SupportMapFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.map)).getMap();
+				.findFragmentById(R.id.googleMap)).getMap();
 		// Setting my current location
 		googleMap.setMyLocationEnabled(true);						
 		
 		
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		ComerciosRDUtils commercialMarkerUtils = new ComerciosRDUtils();
+		Utils commercialMarkerUtils = new Utils();
 		// Setting background
-		ComerciosRDUtils.setActionBarBackground(getActionBar(),ComerciosRDConstants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),Constants.MAIN_HEADER_COLOR);
 		// Getting current location
-		ComerciosRDUtils.moveToCurrentLocation(googleMap,
+		Utils.moveToCurrentLocation(googleMap,
 				commercialMarkerUtils.getlocation(locationManager));
 		Bundle extras = getIntent().getExtras();
 		clienteId = extras.getLong("clienteId");
@@ -89,7 +85,7 @@ public class MainActivity extends FragmentActivity {
 	
 				break;
 			case R.id.change_map:
-				ComerciosRDUtils.alternarVista(googleMap);
+				Utils.alternarVista(googleMap);
 				break;
 	
 			default:
@@ -100,23 +96,23 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void setSearchButtonActive() {
-		AutoCompleteTextView txtEdit = (AutoCompleteTextView) findViewById(R.id.searchText);
-		txtEdit.requestFocus();
+//		AutoCompleteTextView txtEdit = (AutoCompleteTextView) findViewById(R.id.searchText);
+//		txtEdit.requestFocus();
 		// Setting Auto Complete array
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.my_list_item, autocompleteTexts);
-
-		txtEdit.setAdapter(adapter);
+//		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.my_list_item, autocompleteTexts);
+//
+//		txtEdit.setAdapter(adapter);
 
 		googleMap.setOnMapClickListener(new OnMapClickListener() {
 			@Override
 			public void onMapClick(LatLng arg0) {
 				EditText txtEdit = (EditText) findViewById(R.id.searchText);
-				if (Validations.ValidateIsNotNull(txtEdit))
+				if (Validations.validateIsNotNull(txtEdit))
 					txtEdit.clearFocus();
 
 			}
 		});
-		setEditTextAction(txtEdit);
+//		setEditTextAction(txtEdit);
 	}
 	//Method is executed when the Back Button is pressed
 	@Override
@@ -124,7 +120,7 @@ public class MainActivity extends FragmentActivity {
 		super.onBackPressed();
 		AutoCompleteTextView txtEdit = (AutoCompleteTextView) findViewById(R.id.searchText);
 
-		if (Validations.ValidateIsNotNull(txtEdit))
+		if (Validations.validateIsNotNull(txtEdit))
 			txtEdit.clearFocus();
 	}
 	//Metodo que busca las localidades
@@ -150,8 +146,8 @@ public class MainActivity extends FragmentActivity {
 				try {
 
 					JSONArray jsonArray = CallServices
-							.callService(ComerciosRDConstants.API_URL
-									+ ComerciosRDConstants.API_CLIENT_MODULE
+							.callService(Constants.API_URL
+									+ Constants.API_CLIENT_MODULE
 									+ "/?format=json");
 					autocompleteTexts = new String[jsonArray.length()];
 					for (int i = 0; i < jsonArray.length(); i++) {
