@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +27,7 @@ import com.comerciosrd.pojos.Provincia;
 import com.comerciosrd.utils.CallServices;
 import com.comerciosrd.utils.Constants;
 import com.comerciosrd.utils.Utils;
+import com.comerciosrd.utils.Validations;
 
 
 public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
@@ -67,6 +69,7 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 																+ Constants.API_LOCATION_MODULE							
 																+ "/?format=json&idCliente=" + idCliente +"&idEstado=1");
 				data = new ArrayList<Localidad>();
+				Bitmap logoCliente = null;
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject obj = jsonArray.getJSONObject(i);
 					Localidad location = new Localidad();
@@ -76,7 +79,11 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
 					//Consiguiendo el logo
 					String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
-					cliente.setLogo(Utils.drawableFromUrl(clientLogoUrl));
+					
+					if(Validations.validateIsNull(logoCliente))
+						logoCliente = Utils.drawableFromUrl(clientLogoUrl);
+					
+					cliente.setLogo(logoCliente);
 					//Agregando el cliente al objeto localidad
 					location.setCliente(cliente);
 					
