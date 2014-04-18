@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/list_view"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_view_as_list"
+        android:title="Vista de lista"/>
+
+    <item
+        android:id="@+id/change_map"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_action_map"
+        android:title="Cambiar mapa"/>
+    
+    
+    <item
+        android:id="@+id/action_settings"
+        android:title="Herramientas">
+    </item>
+
+</menu>

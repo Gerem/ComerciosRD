@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/descriptionTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:gravity="left|top"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="#000"
+            android:textSize="14dp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:id="@+id/categoriaTxt"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:layout_weight="1"
+            android:gravity="right|top"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="#000"
+            android:textSize="13dp"
+            android:textStyle="normal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="left|center_horizontal" />
+
+        <TextView
+            android:id="@+id/direccionTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.43"
+            android:textStyle="normal|italic"
+            android:paddingTop="5dp"
+            android:textColor="#000"
+            android:textSize="13dp" />
+
+        <TextView
+            android:id="@+id/distanciaTxt"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_horizontal"
+            android:layout_weight="1"            
+            android:gravity="right|center_horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="0.5km"
+            android:textColor="#1A9FCF"
+            android:textSize="11dp" />
+    </LinearLayout>
+
+</LinearLayout>
