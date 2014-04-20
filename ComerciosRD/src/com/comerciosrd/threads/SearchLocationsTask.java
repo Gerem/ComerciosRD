@@ -1,10 +1,12 @@
 package com.comerciosrd.threads;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -60,73 +62,31 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 	}
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		if(Utils.existFile(idCliente.toString(), context)){						
-			//Searching data in cache
-			data = (ArrayList<Localidad>) Utils.getArrayListFromCache(idCliente.toString(), context);			
-		}else if(Utils.isOnline(context)){
-			try {
-				JSONArray jsonArray = CallServices.callService(Constants.API_URL
-																+ Constants.API_LOCATION_MODULE							
-																+ "/?format=json&idCliente=" + idCliente +"&idEstado=1");
-				data = new ArrayList<Localidad>();
-				Bitmap logoCliente = null;
-				for (int i = 0; i < jsonArray.length(); i++) {
-					JSONObject obj = jsonArray.getJSONObject(i);
-					Localidad location = new Localidad();
-					//Informacion del cliente
-					Cliente cliente = new Cliente();
-					cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
-					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
-					//Consiguiendo el logo
-					String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
-					
-					if(Validations.validateIsNull(logoCliente))
-						logoCliente = Utils.drawableFromUrl(clientLogoUrl);
-					
-					cliente.setLogo(logoCliente);
-					//Agregando el cliente al objeto localidad
-					location.setCliente(cliente);
-					
-					Provincia provincia = new Provincia();
-					provincia.setIdProvinciaPk(obj.getLong("ID_PROVINCIA_PK"));
-					provincia.setNombreProvincia(obj.getString("NOMBRE_PROVINCIA"));
-	
-					Categoria categoria = new Categoria();
-					categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
-					
-					location.setProvincia(provincia);
-					location.setCategoria(categoria);
-					
-					//Informacion general de localidad
-					location.setIdLocalidadPk(obj.getLong("ID_LOCALIDAD_PK"));				
-					location.setLatitud(obj.getDouble("LATITUD"));
-					location.setLongitud(obj.getDouble("LONGITUD"));
-					location.setDireccion(obj.getString("DIRECCION"));
-					location.setDescripcion(obj.getString("DESCRIPCION"));
-					location.setTelefono(obj.getString("TELEFONO"));
-					location.setEmail(obj.getString("EMAIL"));				
-					
+		try {
+			if(Utils.existFile(idCliente.toString(), context)){						
+				//Searching data in cache
+				data = (ArrayList<Localidad>) Utils.getArrayListFromCache(idCliente.toString(), context);
+				for (Localidad location : data) {
 					//Buscando la distancia en metros
 					Double distancia = Utils.distanceFrom(Localidad.lat, Localidad.lng, location.getLatitud(), location.getLongitud())/1000;
 					location.setDistancia(Utils.roundTwoDecimals(distancia,"#.#"));
-					
-					data.add(location);				
 				}
-				
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+			}else if(Utils.isOnline(context)){				
+					JSONArray jsonArray = CallServices.callService(Constants.API_URL
+																	+ Constants.API_LOCATION_MODULE							
+																	+ "/?format=json&idCliente=" + idCliente +"&idEstado=1");
+					data = this.getLocationList(jsonArray);
+			}else{
+				notOnlineNotCache = true;				
 			}
-			
-		}else{
-			notOnlineNotCache = true;
-			
+			Collections.sort(data, new Comparator<Localidad>() {
+			    public int compare(Localidad l1, Localidad l2) {
+			        return l1.getDistancia().compareTo(l2.getDistancia());
+			    }
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		Collections.sort(data, new Comparator<Localidad>() {
-		    public int compare(Localidad l1, Localidad l2) {
-		        return l1.getDistancia().compareTo(l2.getDistancia());
-		    }
-		});
 		return null;
 	}
 	@SuppressLint("NewApi")
@@ -167,5 +127,52 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 		});
 	    // HIDE THE SPINNER AFTER LOADING FEEDS
 	    progressBarLL.setVisibility(View.GONE);
+	}
+	public ArrayList<Localidad> getLocationList(JSONArray jsonArray) throws JSONException, IOException{
+		Bitmap logoCliente = null;
+		ArrayList<Localidad> listaLocalidad = new ArrayList<Localidad>();
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject obj = jsonArray.getJSONObject(i);
+			Localidad location = new Localidad();
+			//Informacion del cliente
+			Cliente cliente = new Cliente();
+			cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
+			cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
+			//Consiguiendo el logo
+			String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+			
+			if(Validations.validateIsNull(logoCliente))
+				logoCliente = Utils.drawableFromUrl(clientLogoUrl);
+			
+			cliente.setLogo(logoCliente);
+			//Agregando el cliente al objeto localidad
+			location.setCliente(cliente);
+			
+			Provincia provincia = new Provincia();
+			provincia.setIdProvinciaPk(obj.getLong("ID_PROVINCIA_PK"));
+			provincia.setNombreProvincia(obj.getString("NOMBRE_PROVINCIA"));
+
+			Categoria categoria = new Categoria();
+			categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
+			
+			location.setProvincia(provincia);
+			location.setCategoria(categoria);
+			
+			//Informacion general de localidad
+			location.setIdLocalidadPk(obj.getLong("ID_LOCALIDAD_PK"));				
+			location.setLatitud(obj.getDouble("LATITUD"));
+			location.setLongitud(obj.getDouble("LONGITUD"));
+			location.setDireccion(obj.getString("DIRECCION"));
+			location.setDescripcion(obj.getString("DESCRIPCION"));
+			location.setTelefono(obj.getString("TELEFONO"));
+			location.setEmail(obj.getString("EMAIL"));				
+			
+			//Buscando la distancia en metros
+			Double distancia = Utils.distanceFrom(Localidad.lat, Localidad.lng, location.getLatitud(), location.getLongitud())/1000;
+			location.setDistancia(Utils.roundTwoDecimals(distancia,"#.#"));
+			
+			listaLocalidad.add(location);				
+		}
+		return listaLocalidad;
 	}
 }

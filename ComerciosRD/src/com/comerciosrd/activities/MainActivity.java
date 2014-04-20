@@ -31,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
+
 @SuppressLint("NewApi")
 public class MainActivity extends FragmentActivity {
 	private MenuItem menuItem;

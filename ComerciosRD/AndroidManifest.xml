@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.comerciosrd.map"
-    android:versionCode="8"
+    android:versionCode="9"
     android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
-
+	<uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <permission
         android:name="com.comerciosrd.map.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="com.comerciosrd.map.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />    
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
@@ -52,7 +51,7 @@
         </activity>
         <activity
             android:name="com.comerciosrd.activities.CategoriesActivity"
-            android:label="Negocios" >
+            android:label="Comercios RD" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,10 +68,11 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA62JKoc7tG9SsFOod-WMyL2s163NnpVLQ" />
+            android:value="AIzaSyBY31DiBEizIX1fqKWCtL7s5SEskJI4j2I" />
         
-        <activity android:name="com.google.android.gms.ads.AdActivity"
-             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+        <meta-data android:name="com.google.android.gms.version"
+       			   android:value="@integer/google_play_services_version"/>
+        
     </application>
 
 </manifest>
