@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SearchLocationsTask;
-import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 
 
@@ -33,7 +33,7 @@ public class ListSucursales extends Activity {
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		// Setting background
 		Utils.setActionBarBackground(getActionBar(),
-				Constants.MAIN_HEADER_COLOR);
+				PropertiesConstants.MAIN_HEADER_COLOR);
 		progressBarLL = (LinearLayout) findViewById(R.id.listLayoutForCircleLoading);
 
 		Bundle extras = getIntent().getExtras();

@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.comerciosrd.adapters.LocationDetailAdapter;
 import com.comerciosrd.map.R;
-import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 
@@ -29,23 +29,23 @@ public class LocationDetail extends Activity {
 		setContentView(R.layout.list_activity);
 		Bundle extras = getIntent().getExtras();
 		setView(extras);
-		Utils.setActionBarBackground(getActionBar(),Constants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
 		
 	}
 
 	public void setView(Bundle extras) {
 		if (Validations.validateIsNotNull(extras)) {
 			//Consiguiendo campos..			
-			String nombreCliente = extras.getString(Constants.CLIENT_NAME_FIELD);
-			String nombreCategoria = extras.getString(Constants.CATEGORY_NAME_FIELD);
-			String email = extras.getString(Constants.EMAIL_FIELD);
-			String descripcion = extras.getString(Constants.DESCRIPTION_FIELD);
+			String nombreCliente = extras.getString(PropertiesConstants.CLIENT_NAME_FIELD);
+			String nombreCategoria = extras.getString(PropertiesConstants.CATEGORY_NAME_FIELD);
+			String email = extras.getString(PropertiesConstants.EMAIL_FIELD);
+			String descripcion = extras.getString(PropertiesConstants.DESCRIPTION_FIELD);
 			
-			final Double latitud = extras.getDouble(Constants.LATITUDE_FIELD);
-			final Double longitud = extras.getDouble(Constants.LONGITUDE_FIELD);
+			final Double latitud = extras.getDouble(PropertiesConstants.LATITUDE_FIELD);
+			final Double longitud = extras.getDouble(PropertiesConstants.LONGITUDE_FIELD);
 			
-			String telefono = extras.getString(Constants.PHONE_FIELD);
-			String direccion = extras.getString(Constants.ADDRESS_FIELD);
+			String telefono = extras.getString(PropertiesConstants.PHONE_FIELD);
+			String direccion = extras.getString(PropertiesConstants.ADDRESS_FIELD);
 			
 			String categoria = nombreCategoria;
 			final String[] content = { descripcion, telefono,

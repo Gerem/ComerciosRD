@@ -16,7 +16,7 @@ import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.pojos.Provincia;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -53,8 +53,8 @@ public class SetLocationTask extends AsyncTask<Void, Void, Void> {
 		try {
 						
 				JSONArray jsonArray = CallServices
-						.callService(Constants.API_URL
-								+ Constants.API_LOCATION_MODULE
+						.callService(PropertiesConstants.API_URL
+								+ PropertiesConstants.API_LOCATION_MODULE
 								+ "/?format=json&idCliente=" + query);
 	
 				locations = new ArrayList<Localidad>();
@@ -67,7 +67,7 @@ public class SetLocationTask extends AsyncTask<Void, Void, Void> {
 					cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
 					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
 					
-					String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+					String clientLogoUrl = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
 					cliente.setLogo(Utils.drawableFromUrl(clientLogoUrl));
 					
 					location.setCliente(cliente);

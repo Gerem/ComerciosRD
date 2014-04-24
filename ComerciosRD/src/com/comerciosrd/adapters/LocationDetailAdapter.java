@@ -18,7 +18,7 @@ public class LocationDetailAdapter extends ArrayAdapter<String> {
 	private final Integer[] img = { null, R.drawable.ic_action_end_call,
 									R.drawable.ic_action_next_item, 
 									R.drawable.ic_action_email,
-									R.drawable.ic_action_go_to_today};
+									null};
 	
 	public LocationDetailAdapter(Activity context,  String[] content) {
 		super(context, R.layout.list_single, content);

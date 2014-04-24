@@ -27,7 +27,7 @@ import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.pojos.Provincia;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 
@@ -72,8 +72,8 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 					location.setDistancia(Utils.roundTwoDecimals(distancia,"#.#"));
 				}
 			}else if(Utils.isOnline(context)){				
-					JSONArray jsonArray = CallServices.callService(Constants.API_URL
-																	+ Constants.API_LOCATION_MODULE							
+					JSONArray jsonArray = CallServices.callService(PropertiesConstants.API_URL
+																	+ PropertiesConstants.API_LOCATION_MODULE							
 																	+ "/?format=json&idCliente=" + idCliente +"&idEstado=1");
 					data = this.getLocationList(jsonArray);
 			}else{
@@ -139,7 +139,7 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 			cliente.setIdClientePk(obj.getLong("ID_CLIENTE_FK"));
 			cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
 			//Consiguiendo el logo
-			String clientLogoUrl = Constants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+			String clientLogoUrl = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
 			
 			if(Validations.validateIsNull(logoCliente))
 				logoCliente = Utils.drawableFromUrl(clientLogoUrl);

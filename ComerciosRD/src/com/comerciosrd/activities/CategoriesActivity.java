@@ -5,21 +5,25 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SearchCategoriesTask;
-import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
-
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 @SuppressLint("NewApi")
 public class CategoriesActivity extends Activity{
 	// CAST THE LINEARLAYOUT HOLDING THE MAIN PROGRESS (SPINNER)
 	private LinearLayout progressBarLL;
 	private GridView gridView;
-
+	private AdView adView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,13 +31,29 @@ public class CategoriesActivity extends Activity{
 		gridView = (GridView) findViewById(R.id.gridView1);
 		
 		// Setting background
-		Utils.setActionBarBackground(getActionBar(),Constants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
 		progressBarLL = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
 		//Calling categories
 		SearchCategoriesTask categoriesTask = new SearchCategoriesTask(this, progressBarLL,gridView);
 		categoriesTask.execute();//Executing
+
 		
+		RelativeLayout layout = new RelativeLayout(this);
 		
+		RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+		                                        							   RelativeLayout.LayoutParams.WRAP_CONTENT);
+		layout.removeAllViews();
+		adView = new AdView(this);		
+		adView.setAdSize(AdSize.BANNER);		
+		adView.setAdUnitId(PropertiesConstants.ADMOB_PUBLISHER_ID);
+	    adView.setVisibility(View.VISIBLE);
+	    layout.addView(adView,adParams);	
+	    
+	    AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+	    											 .addTestDevice("B8FB2DACA9171B93D396BE220C09B641").build();
+
+	    adView.loadAd(adRequest);
+	       
 
 	}
 	@Override
@@ -66,4 +86,21 @@ public class CategoriesActivity extends Activity{
 	
 		return true;
 	}
+	@Override
+    public void onPause() {
+      adView.pause();
+      super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+      super.onResume();
+      adView.resume();
+    }
+
+    @Override
+    public void onDestroy() {
+      adView.destroy();
+      super.onDestroy();
+    }
 }

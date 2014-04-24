@@ -1,7 +1,7 @@
 package com.comerciosrd.utils;
 
 
-public class Constants {
+public class PropertiesConstants {
 	public static final String APP_NAME="Commercial Marker";
 	public static final String API_URL="http://aleyworld.com/ApiServer/api/";
 	public static final String API_LOCATION_MODULE = "localidad";
@@ -21,6 +21,7 @@ public class Constants {
 	
 	public static final String MAIN_HEADER_COLOR="#1A9FCF";
 	
+	public static final String ADMOB_PUBLISHER_ID="a152d23767dbc27";
 	
 	public static final String CATEGORY_VIEW_NAME = "Negocios";
 }

@@ -21,7 +21,7 @@ import com.comerciosrd.adapters.CategoryGridAdapter;
 import com.comerciosrd.map.R;
 import com.comerciosrd.pojos.Categoria;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.Constants;
+import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 
 
@@ -43,14 +43,14 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		if(Utils.existFile(Constants.CATEGORY_VIEW_NAME, context)){						
+		if(Utils.existFile(PropertiesConstants.CATEGORY_VIEW_NAME, context)){						
 			//Searching data in cache
-			data = (ArrayList<Categoria>) Utils.getArrayListFromCache(Constants.CATEGORY_VIEW_NAME, context);			
+			data = (ArrayList<Categoria>) Utils.getArrayListFromCache(PropertiesConstants.CATEGORY_VIEW_NAME, context);			
 		}else if(Utils.isOnline(context)){
 			try {
 				JSONArray jsonArray = CallServices
-						.callService(Constants.API_URL
-								+ Constants.API_CATEGORY_MODULE
+						.callService(PropertiesConstants.API_URL
+								+ PropertiesConstants.API_CATEGORY_MODULE
 								+ "/?format=json&indNegocios=1");
 				data = new ArrayList<Categoria>();
 				for (int i = 0; i < jsonArray.length(); i++) {
@@ -85,7 +85,7 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 			Utils.showToastMessage(context, "Necesita de una conexión a internet para cargar.");
 			return;
 		}
-		Utils.saveArrayListToMemCache(Constants.CATEGORY_VIEW_NAME, data, context);
+		Utils.saveArrayListToMemCache(PropertiesConstants.CATEGORY_VIEW_NAME, data, context);
 		
 		customGridAdapter = new CategoryGridAdapter(context, R.layout.row_grid,data);
 
