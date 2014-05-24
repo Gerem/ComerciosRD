@@ -50,7 +50,7 @@ public class LocationsListAdapter extends ArrayAdapter<Localidad> {
 		Localidad localidad = data.get(position);
 		recordHolder.descriptionTxt.setText(localidad.getDescripcion());
 		recordHolder.logo.setImageBitmap(localidad.getCliente().getLogo());
-		recordHolder.categoriaTxt.setText(localidad.getCategoria().getCategoria());
+		recordHolder.categoriaTxt.setText(localidad.getCategoria());
 		recordHolder.direccionTxt.setText(localidad.getDireccion());
 		recordHolder.distanciaTxt.setText(localidad.getDistancia().toString() + "km");
 		return row;

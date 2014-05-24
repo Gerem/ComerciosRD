@@ -16,13 +16,15 @@ import com.comerciosrd.map.R;
 import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 
 
 @SuppressLint("NewApi")
 public class LocationDetail extends Activity {
 	ListView list;
-	
+	private AdView adView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,7 +32,10 @@ public class LocationDetail extends Activity {
 		Bundle extras = getIntent().getExtras();
 		setView(extras);
 		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
-		
+		// Buscar AdView como recurso y cargar una solicitud.
+		adView = (AdView)this.findViewById(R.id.adView);
+	    AdRequest adRequest = new AdRequest.Builder().build();
+	    adView.loadAd(adRequest);
 	}
 
 	public void setView(Bundle extras) {
@@ -69,8 +74,8 @@ public class LocationDetail extends Activity {
 							Intent sendIntent = new Intent(Intent.ACTION_SEND);
 							sendIntent.setType("plain/text");
 							sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { content[position].toString() });
-							sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Asunto");
-							sendIntent.putExtra(Intent.EXTRA_TEXT, "Texto");
+							sendIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+							sendIntent.putExtra(Intent.EXTRA_TEXT, "");
 							startActivity(Intent.createChooser(sendIntent, ""));
 							break;
 					case 2:

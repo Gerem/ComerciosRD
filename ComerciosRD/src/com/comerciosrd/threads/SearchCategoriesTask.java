@@ -23,6 +23,7 @@ import com.comerciosrd.pojos.Categoria;
 import com.comerciosrd.utils.CallServices;
 import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
+import com.comerciosrd.utils.Validations;
 
 
 
@@ -58,7 +59,13 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 					Categoria categoria = new Categoria();
 					categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
 					categoria.setIdCategoriaPk(obj.getLong("ID_CATEGORIA_PK"));
-					data.add(categoria);
+					
+					//Getting LOGO
+					String categoryImage = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("IMAGE"); 
+					if(Validations.validateIsNotNullAndNotEmpty(obj.getString("IMAGE"))){
+						categoria.setLogo(Utils.drawableFromUrl(categoryImage));					
+						data.add(categoria);
+					}
 				}
 				
 			} catch (Exception e) {

@@ -21,9 +21,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -82,6 +89,27 @@ public class Utils implements LocationListener{
 			map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);break;
 		}
 	}
+	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
+	            .getHeight(), Config.ARGB_8888);
+	    Canvas canvas = new Canvas(output);
+
+	    final int color = 0xff424242;
+	    final Paint paint = new Paint();
+	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+	    final RectF rectF = new RectF(rect);
+	    final float roundPx = pixels;
+
+	    paint.setAntiAlias(true);
+	    canvas.drawARGB(0, 0, 0, 0);
+	    paint.setColor(color);
+	    canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+	    canvas.drawBitmap(bitmap, rect, rect, paint);
+
+	    return output;
+	}
 	/***
 	 * 
 	 * @param locationManager
@@ -123,7 +151,7 @@ public class Utils implements LocationListener{
 	 */
 	public static void setActionBarBackground(ActionBar actionBar, String color) {
 		actionBar.setBackgroundDrawable(new ColorDrawable(Color
-				.parseColor(color)));
+				.parseColor(color)));		
 		
 	}
 	/**	 
@@ -215,7 +243,7 @@ public class Utils implements LocationListener{
 			            	i.putExtra("telefono", location.getTelefono());
 			            	i.putExtra("direccion", marker.getSnippet());
 			            	i.putExtra("descripcion", marker.getTitle());		
-			            	i.putExtra("nombreCategoria", location.getCategoria().getCategoria());
+			            	i.putExtra("nombreCategoria", location.getCategoria());
 			            	i.putExtra("nombreCliente", location.getCliente().getNombreCliente());
 			            	//Comenzando la actividad
 			                context.startActivity(i);
@@ -318,7 +346,7 @@ public class Utils implements LocationListener{
 	
 	public static Double roundTwoDecimals(double decimal, String format) { 
 	      DecimalFormat twoDForm = new DecimalFormat(format); 
-	      return Double.valueOf(twoDForm.format(decimal));
+	      return Double.valueOf(twoDForm.format(decimal).replace(',', '.'));
 	} 
 	/***
 	 * 

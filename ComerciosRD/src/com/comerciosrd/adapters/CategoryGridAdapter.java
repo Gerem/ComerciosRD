@@ -38,7 +38,7 @@ public class CategoryGridAdapter extends ArrayAdapter<Categoria> {
 
 			recordHolder = new RecordHolder();
 			recordHolder.txtTitle = (TextView) row.findViewById(R.id.category_name);
-			//recordHolder.imageCategoria = (ImageView) row.findViewById(R.id.Categoria_image);
+			recordHolder.imageCategoria = (ImageView) row.findViewById(R.id.item_image);
 			row.setTag(recordHolder);
 		} else {
 			recordHolder = (RecordHolder) row.getTag();
@@ -46,7 +46,7 @@ public class CategoryGridAdapter extends ArrayAdapter<Categoria> {
 
 		Categoria Categoria = data.get(position);
 		recordHolder.txtTitle.setText(Categoria.getCategoria());
-		//recordHolder.imageCategoria.setImageBitmap(Categoria.getImage());
+		recordHolder.imageCategoria.setImageBitmap(Categoria.getLogo());
 		return row;
 
 	}

@@ -68,12 +68,9 @@ public class LocationDetailTask extends AsyncTask<Void, Void, Void> {
 					Provincia provincia = new Provincia();
 					provincia.setIdProvinciaPk(obj.getLong("ID_PROVINCIA_PK"));
 					provincia.setNombreProvincia(obj.getString("NOMBRE_PROVINCIA"));
-
-					Categoria categoria = new Categoria();
-					categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
-					
+			
 					location.setProvincia(provincia);
-					location.setCategoria(categoria);
+					location.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
 					
 					//Informacion general de localidad
 					location.setIdLocalidadPk(obj.getLong("ID_LOCALIDAD_PK"));				

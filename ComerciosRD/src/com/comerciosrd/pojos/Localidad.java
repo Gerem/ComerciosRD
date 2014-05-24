@@ -11,8 +11,7 @@ public class Localidad implements Serializable {
 	private Long idLocalidadPk;
 
 	private Cliente cliente;
-	private Categoria categoria;
-	private Long idEstadoFk;
+	private String categoria;	
 
 	private Provincia provincia;
 
@@ -42,13 +41,6 @@ public class Localidad implements Serializable {
 		this.idLocalidadPk = idLocalidadPk;
 	}
 
-	public Long getIdEstadoFk() {
-		return idEstadoFk;
-	}
-
-	public void setIdEstadoFk(Long idEstadoFk) {
-		this.idEstadoFk = idEstadoFk;
-	}
 
 	public String getDescripcion() {
 		return descripcion;
@@ -122,11 +114,11 @@ public class Localidad implements Serializable {
 		this.indCercano = indCercano;
 	}
 
-	public Categoria getCategoria() {
+	public String getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(String categoria) {
 		this.categoria = categoria;
 	}
 

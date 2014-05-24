@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,7 +62,9 @@ public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
 					//Getting LOGO
 					String clientLogoUrl = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
-					cliente.setLogo(Utils.drawableFromUrl(clientLogoUrl));
+					Bitmap logoBM = Utils.drawableFromUrl(clientLogoUrl);
+					logoBM = Utils.getRoundedCornerBitmap(logoBM, 10);
+					cliente.setLogo(logoBM);
 					
 					data.add(cliente);
 				}

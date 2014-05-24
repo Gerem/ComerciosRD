@@ -38,22 +38,10 @@ public class CategoriesActivity extends Activity{
 		categoriesTask.execute();//Executing
 
 		
-		RelativeLayout layout = new RelativeLayout(this);
-		
-		RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-		                                        							   RelativeLayout.LayoutParams.WRAP_CONTENT);
-		layout.removeAllViews();
-		adView = new AdView(this);		
-		adView.setAdSize(AdSize.BANNER);		
-		adView.setAdUnitId(PropertiesConstants.ADMOB_PUBLISHER_ID);
-	    adView.setVisibility(View.VISIBLE);
-	    layout.addView(adView,adParams);	
-	    
-	    AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-	    											 .addTestDevice("B8FB2DACA9171B93D396BE220C09B641").build();
-
+		// Buscar AdView como recurso y cargar una solicitud.
+		adView = (AdView)this.findViewById(R.id.adView);
+	    AdRequest adRequest = new AdRequest.Builder().build();
 	    adView.loadAd(adRequest);
-	       
 
 	}
 	@Override
@@ -63,7 +51,7 @@ public class CategoriesActivity extends Activity{
 	
 	@Override	
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
+		// Inflate the menu; this adds items to the action bar if it is present.	
 		if(Utils.isOnline(getApplicationContext()))
 			getMenuInflater().inflate(R.menu.categories_menu, menu);
 		else

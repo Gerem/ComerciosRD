@@ -15,6 +15,8 @@ import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SearchLocationsTask;
 import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 
 public class ListSucursales extends Activity {
@@ -22,7 +24,7 @@ public class ListSucursales extends Activity {
 	private LinearLayout progressBarLL;
 	private ListView listView;
 	private Long clientId;
-
+	private AdView adView;
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,12 @@ public class ListSucursales extends Activity {
 				PropertiesConstants.MAIN_HEADER_COLOR);
 		progressBarLL = (LinearLayout) findViewById(R.id.listLayoutForCircleLoading);
 
+		
+		// Buscar AdView como recurso y cargar una solicitud.
+		adView = (AdView)this.findViewById(R.id.adView);
+	    AdRequest adRequest = new AdRequest.Builder().build();
+	    adView.loadAd(adRequest);
+		
 		Bundle extras = getIntent().getExtras();
 		clientId = extras.getLong("clienteId");
 		Utils commercialMarkerUtils = new Utils();

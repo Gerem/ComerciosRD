@@ -12,6 +12,8 @@ import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SearchClientsTask;
 import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 
 @SuppressLint("NewApi")
@@ -19,7 +21,7 @@ public class ClientByCategoryActivity extends Activity {
 	// CAST THE LINEARLAYOUT HOLDING THE MAIN PROGRESS (SPINNER)
 	private LinearLayout progressBarLL;
 	private GridView gridView;
-
+	private AdView adView;
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,11 @@ public class ClientByCategoryActivity extends Activity {
 		// Calling categories
 		SearchClientsTask categoriesTask = new SearchClientsTask(this,progressBarLL, gridView, categoryId);
 		categoriesTask.execute();// Executing
+		
+		// Buscar AdView como recurso y cargar una solicitud.
+		adView = (AdView)this.findViewById(R.id.adView);
+	    AdRequest adRequest = new AdRequest.Builder().build();
+	    adView.loadAd(adRequest);
 
 	}
 	@Override

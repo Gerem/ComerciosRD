@@ -7,7 +7,7 @@
         android:title="Vista de lista"/>
 
     <item
-        android:id="@+id/change_map"
+        android:id="@+id/change_map" 
         android:orderInCategory="100"
         android:showAsAction="always"
         android:icon="@drawable/ic_action_map"

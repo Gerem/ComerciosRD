@@ -119,7 +119,7 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
             	i.putExtra("telefono", location.getTelefono());
             	i.putExtra("direccion", location.getDireccion());
             	i.putExtra("descripcion", location.getDescripcion());		
-            	i.putExtra("nombreCategoria", location.getCategoria().getCategoria());
+            	i.putExtra("nombreCategoria", location.getCategoria());
             	i.putExtra("nombreCliente", location.getCliente().getNombreCliente());
             	//Comenzando la actividad
                 context.startActivity(i);
@@ -141,9 +141,10 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 			//Consiguiendo el logo
 			String clientLogoUrl = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
 			
-			if(Validations.validateIsNull(logoCliente))
+			if(Validations.validateIsNull(logoCliente)){
 				logoCliente = Utils.drawableFromUrl(clientLogoUrl);
-			
+				logoCliente = Utils.getRoundedCornerBitmap(logoCliente, 12);
+			}
 			cliente.setLogo(logoCliente);
 			//Agregando el cliente al objeto localidad
 			location.setCliente(cliente);
@@ -151,12 +152,9 @@ public class SearchLocationsTask extends AsyncTask<Void, Void, Void>{
 			Provincia provincia = new Provincia();
 			provincia.setIdProvinciaPk(obj.getLong("ID_PROVINCIA_PK"));
 			provincia.setNombreProvincia(obj.getString("NOMBRE_PROVINCIA"));
-
-			Categoria categoria = new Categoria();
-			categoria.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
 			
 			location.setProvincia(provincia);
-			location.setCategoria(categoria);
+			location.setCategoria(obj.getString("NOMBRE_CATEGORIA"));
 			
 			//Informacion general de localidad
 			location.setIdLocalidadPk(obj.getLong("ID_LOCALIDAD_PK"));				
