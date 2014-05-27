@@ -62,8 +62,7 @@ public class MainActivity extends FragmentActivity {
 		// Setting background
 		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
 		// Getting current location
-		Utils.moveToCurrentLocation(googleMap,
-				commercialMarkerUtils.getlocation(locationManager));
+		Utils.moveToCurrentLocation(googleMap,commercialMarkerUtils.getlocation(locationManager));
 		Bundle extras = getIntent().getExtras();
 		clienteId = extras.getLong("clienteId");
 		searchLocations();

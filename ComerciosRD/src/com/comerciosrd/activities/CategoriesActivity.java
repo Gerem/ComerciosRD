@@ -2,6 +2,7 @@ package com.comerciosrd.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,10 +29,9 @@ public class CategoriesActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.grid_activity);
-		gridView = (GridView) findViewById(R.id.gridView1);
 		
-		// Setting background
-		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
+		gridView = (GridView) findViewById(R.id.gridView1);		
+		
 		progressBarLL = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
 		//Calling categories
 		SearchCategoriesTask categoriesTask = new SearchCategoriesTask(this, progressBarLL,gridView);
@@ -56,7 +56,11 @@ public class CategoriesActivity extends Activity{
 			getMenuInflater().inflate(R.menu.categories_menu, menu);
 		else
 			Utils.showToastMessage(getApplicationContext(), "No tiene conexión a internet, Trabajará en cache.");
-		return true;
+		
+		// Setting background
+		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
+		
+		return true;		
 	}
 	
 	@Override
@@ -67,7 +71,11 @@ public class CategoriesActivity extends Activity{
 				//Calling categories
 				SearchCategoriesTask categoriesTask = new SearchCategoriesTask(this, progressBarLL,gridView);
 				categoriesTask.execute();//Executing
-				break;			
+				break;
+			case R.id.newLocation:
+				Intent i = new Intent(this, NewLocationActivity.class);				
+				// Comenzando la actividad
+				startActivity(i);
 			default:
 				break;
 			}

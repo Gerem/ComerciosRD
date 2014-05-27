@@ -44,6 +44,9 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
+		if(Utils.existFile(PropertiesConstants.OLD_CATEGORY_VIEW_NAME, context))
+			Utils.clearCache(context);
+		
 		if(Utils.existFile(PropertiesConstants.CATEGORY_VIEW_NAME, context)){						
 			//Searching data in cache
 			data = (ArrayList<Categoria>) Utils.getArrayListFromCache(PropertiesConstants.CATEGORY_VIEW_NAME, context);			

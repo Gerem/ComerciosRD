@@ -44,15 +44,23 @@ public class ClientByCategoryActivity extends Activity {
 		categoriesTask.execute();// Executing
 		
 		// Buscar AdView como recurso y cargar una solicitud.
-		adView = (AdView)this.findViewById(R.id.adView);
-	    AdRequest adRequest = new AdRequest.Builder().build();
-	    adView.loadAd(adRequest);
+		this.setAdView();
 
 	}
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 	  super.onRestoreInstanceState(savedInstanceState);
 	}
+	
+	
+	private void setAdView(){
+		// Buscar AdView como recurso y cargar una solicitud.
+		adView = (AdView)this.findViewById(R.id.adView);
+	    AdRequest adRequest = new AdRequest.Builder().build();
+	    adView.loadAd(adRequest);
+	}
+		
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
