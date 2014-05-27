@@ -10,4 +10,5 @@
 	<string name="optional">(Opcional)</string>
 	<string name="save">Guardar</string>
 	<string name="locDesc">Descripcion de Sucursal</string>
+	<string name="sendingRequest">Enviando Solicitud..</string>
 </resources>

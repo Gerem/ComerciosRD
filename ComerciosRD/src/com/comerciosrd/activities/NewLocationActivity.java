@@ -1,25 +1,23 @@
 package com.comerciosrd.activities;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.json.JSONException;
-
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.comerciosrd.map.R;
 import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.threads.AutoCompleteTask;
 import com.comerciosrd.threads.SendMailTask;
-import com.comerciosrd.utils.CallServices;
+import com.comerciosrd.utils.ItemWidget;
 import com.comerciosrd.utils.PropertiesConstants;
 import com.comerciosrd.utils.Utils;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,16 +26,33 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mobsandgeeks.saripaar.Rule;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.Validator.ValidationListener;
+import com.mobsandgeeks.saripaar.annotation.Required;
 
-public class NewLocationActivity extends FragmentActivity{
+public class NewLocationActivity extends FragmentActivity implements ValidationListener{
 	
 	private GoogleMap googleMap;
 	private Localidad locationRequest;
+	
+	@Required(order = 1, message = "El Cliente es obligatorio")	
 	private AutoCompleteTextView autoCompleteView;
+	
+	@Required(order = 2, message = "El Descripcion es obligatorio")
 	private EditText locDesc;
+	
+	@Required(order = 3, message = "El Direccion es obligatorio")	
 	private EditText locAddress;
-	private EditText locPhone;
+	
+	@ItemWidget(identifier = R.id.locPhone, className = EditText.class)
+	private EditText locPhone;	
+	
+	@ItemWidget(identifier = R.id.locEmail, className = EditText.class)
 	private EditText locEmail;
+	
+	private Validator validator;	
+	private MenuItem saveMenu;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,10 +61,13 @@ public class NewLocationActivity extends FragmentActivity{
 		// Setting background
 		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);		
 		
-		locDesc = (EditText)this.findViewById(R.id.locationDesc);
-		locAddress = (EditText)this.findViewById(R.id.locAddres);
-		locPhone = (EditText)this.findViewById(R.id.locPhone);
-		locEmail = (EditText)this.findViewById(R.id.locEmail);
+		validator = new Validator(this);
+        validator.setValidationListener(this);		
+		
+//		locDesc = (EditText)this.findViewById(R.id.locationDesc);
+//		locAddress = (EditText)this.findViewById(R.id.locAddres);
+//		locPhone = (EditText)this.findViewById(R.id.locPhone);
+//		locEmail = (EditText)this.findViewById(R.id.locEmail);
 		
 		autoCompleteView = (AutoCompleteTextView) this.findViewById(R.id.clienteAutoComple);
 		
@@ -96,7 +114,9 @@ public class NewLocationActivity extends FragmentActivity{
 		switch (item.getItemId()) {
 		case R.id.saveLocation:
 			 try {
-				this.sendNewLocation();
+				 saveMenu = item;
+				 validator.validate();
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -108,7 +128,7 @@ public class NewLocationActivity extends FragmentActivity{
 
 		return true;
 	}
-	public void sendNewLocation(){
+	public void sendNewLocation(MenuItem saveMenu){
 		Cliente cliente = new Cliente();
 		cliente.setNombreCliente(autoCompleteView.getText().toString());
 		locationRequest.setDescripcion(locDesc.getText().toString());
@@ -126,11 +146,38 @@ public class NewLocationActivity extends FragmentActivity{
 		body +="<p>Longitud: "	+ locationRequest.getLongitud()  + "</p></br>";
 		body +="<p>Latitud: "	+ locationRequest.getLatitud()  + "</p></br>";
 		
-		SendMailTask mailTask = new SendMailTask(body, PropertiesConstants.EMAIL_SUBJECT, PropertiesConstants.ADMIN_EMAIL);				
+		SendMailTask mailTask = new SendMailTask(body, PropertiesConstants.EMAIL_SUBJECT, PropertiesConstants.ADMIN_EMAIL,this,saveMenu);				
 		mailTask.execute();
+		
 	}
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 	  super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	public void preValidation() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSuccess() {
+		this.sendNewLocation(saveMenu);
+		
+	}
+
+	@Override
+	public void onFailure(View failedView, Rule<?> failedRule) {
+		Log.w("onFailure", "Mensage error " + failedRule.getFailureMessage());
+		Log.w("onFailure", "failedView ID " + failedView.getId());
+		Toast.makeText(this, failedRule.getFailureMessage(), Toast.LENGTH_LONG).show();
+		
+	}
+
+	@Override
+	public void onValidationCancelled() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

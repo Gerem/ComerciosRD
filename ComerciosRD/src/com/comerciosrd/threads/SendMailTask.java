@@ -6,18 +6,36 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.comerciosrd.map.R;
+import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.utils.CallServices;
 import com.comerciosrd.utils.PropertiesConstants;
 
-import android.os.AsyncTask;
-
 public class SendMailTask extends AsyncTask<Void, Void, Void>{
 	private String body,subject, to;
-	public SendMailTask(String body,String subject, String to){
+	private Activity context;	
+	private final MenuItem saveMenu;
+	private ProgressDialog progressDialog;
+	public SendMailTask(String body,String subject, String to, Activity context, MenuItem saveMenu){
 		this.body = body;
 		this.subject = subject;
 		this.to = to;
+		this.context = context;
+		this.saveMenu = saveMenu;
 	}
+	@Override
+	protected void onPreExecute() {
+		saveMenu.setActionView(R.layout.progress_bar);
+		saveMenu.expandActionView();
+	}
+	
 	@Override
 	protected Void doInBackground(Void... params) {
 		try{
@@ -31,6 +49,12 @@ public class SendMailTask extends AsyncTask<Void, Void, Void>{
 			e.printStackTrace();
 		}
 		return null;
+	}
+	@Override
+	protected void onPostExecute(Void result) {	
+		saveMenu.collapseActionView();
+		saveMenu.setActionView(null);
+				
 	}
 
 }
