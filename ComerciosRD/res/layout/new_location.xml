@@ -16,12 +16,14 @@
 	    android:layout_height="wrap_content"
 	    android:text="Cliente" 
 	    android:textColor="#303539"
-	    android:textSize="18dp"
+	    android:textSize="18dp"	    
 	    android:layout_marginTop="5dp"/>
 
 	<AutoCompleteTextView
       android:id="@+id/clienteAutoComple"
       android:hint="@string/required"
+      android:singleLine="true"
+	    android:imeOptions="actionNext"
       android:layout_width="match_parent"      
       android:layout_height="wrap_content"/>
     <TextView       
@@ -36,6 +38,8 @@
         android:id="@+id/locationDesc"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:singleLine="true"
+	    android:imeOptions="actionNext"
         android:hint="@string/required" />
     
     <TextView        
@@ -49,6 +53,8 @@
     <EditText
     	android:id="@+id/locAddres"
         android:layout_width="fill_parent"
+        android:singleLine="true"
+	    android:imeOptions="actionNext"
         android:layout_height="wrap_content"
         android:hint="@string/required" />
     
@@ -66,6 +72,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:phoneNumber="true"
+        android:singleLine="true"
+	    android:imeOptions="actionNext"
         android:hint="@string/optional" />
 	
     <TextView
@@ -80,6 +88,8 @@
         android:id="@+id/locEmail"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:singleLine="true"
+	    android:imeOptions="actionNext"
         android:hint="@string/optional" />
     
 

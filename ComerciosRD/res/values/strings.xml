@@ -9,6 +9,13 @@
 	<string name="required">(Requerido)</string>
 	<string name="optional">(Opcional)</string>
 	<string name="save">Guardar</string>
+	<string name="helpBtn">Ayuda</string>
 	<string name="locDesc">Descripcion de Sucursal</string>
 	<string name="sendingRequest">Enviando Solicitud..</string>
+	<string name="clientRequired">El Cliente es obligatorio. Verifique</string>
+	<string name="descRequired">La Descripcion es obligatoria. Verifique</string>
+	<string name="dirRequired">La Direccion es obligatoria. Verifique</string>
+	<string name="noLocationSelected">No ha seleccionado ninguna ubicacion.</string>	
+	<string name="sentLocationRequest">Gracias por sugerirnos una nueva Sucursal.</string>
+	<string name="saveLocInfo">Presione sobre el mapa para ubicar la sucursal que desea que agreguemos. Luego llenar los campos y presionar el icono de guardar.</string>
 </resources>

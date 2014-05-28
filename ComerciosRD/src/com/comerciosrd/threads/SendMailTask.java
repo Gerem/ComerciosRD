@@ -17,18 +17,18 @@ import com.comerciosrd.map.R;
 import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.utils.CallServices;
 import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.Utils;
 
 public class SendMailTask extends AsyncTask<Void, Void, Void>{
-	private String body,subject, to;
-	private Activity context;	
-	private final MenuItem saveMenu;
-	private ProgressDialog progressDialog;
-	public SendMailTask(String body,String subject, String to, Activity context, MenuItem saveMenu){
+	private String body,subject, to;	
+	private final MenuItem saveMenu;	
+	private Activity context;
+	public SendMailTask(String body,String subject, String to, MenuItem saveMenu, Activity context){
 		this.body = body;
 		this.subject = subject;
-		this.to = to;
-		this.context = context;
+		this.to = to;		
 		this.saveMenu = saveMenu;
+		this.context = context;
 	}
 	@Override
 	protected void onPreExecute() {
@@ -54,7 +54,8 @@ public class SendMailTask extends AsyncTask<Void, Void, Void>{
 	protected void onPostExecute(Void result) {	
 		saveMenu.collapseActionView();
 		saveMenu.setActionView(null);
-				
+		String message = context.getString(R.string.sentLocationRequest);
+		Utils.showCustomToast(context, message, null);
 	}
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.comerciosrd.map"
-    android:versionCode="17"
+    android:versionCode="18"
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="9"
         android:targetSdkVersion="17" />
 
     <uses-feature
@@ -83,7 +83,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDvcj0vwgpjTMI0vF0WyPBeJ4jIzC-yN-M" />
+            android:value="AIzaSyC2MJjtYc9X-lam6O0M7g_IQshHIcVxKqM" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
