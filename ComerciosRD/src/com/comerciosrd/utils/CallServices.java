@@ -45,10 +45,10 @@ public class CallServices {
 		return respJSON;
 	}
 
-	public static void sendToService(String query, List<NameValuePair> postData) throws URISyntaxException, ClientProtocolException, IOException {
+	public static void sendToService(String url, List<NameValuePair> postData) throws URISyntaxException, ClientProtocolException, IOException {
 		// Create a new HttpClient and Post Header
 	    HttpClient httpclient = new DefaultHttpClient();
-	    HttpPost httppost = new HttpPost(query);               
+	    HttpPost httppost = new HttpPost(url);               
         httppost.setEntity(new UrlEncodedFormEntity(postData,"UTF-8"));
 
         // Execute HTTP Post Request

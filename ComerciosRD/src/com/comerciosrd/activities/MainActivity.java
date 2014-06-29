@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SetLocationTask;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,7 +60,7 @@ public class MainActivity extends FragmentActivity {
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Utils commercialMarkerUtils = new Utils();
 		// Setting background
-		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),CommonUtilities.MAIN_HEADER_COLOR);
 		// Getting current location
 		Utils.moveToCurrentLocation(googleMap,commercialMarkerUtils.getlocation(locationManager));
 		Bundle extras = getIntent().getExtras();
@@ -146,8 +146,8 @@ public class MainActivity extends FragmentActivity {
 				try {
 
 					JSONArray jsonArray = CallServices
-							.callService(PropertiesConstants.API_URL
-									+ PropertiesConstants.API_CLIENT_MODULE
+							.callService(CommonUtilities.API_URL
+									+ CommonUtilities.API_CLIENT_MODULE
 									+ "/?format=json");
 					autocompleteTexts = new String[jsonArray.length()];
 					for (int i = 0; i < jsonArray.length(); i++) {

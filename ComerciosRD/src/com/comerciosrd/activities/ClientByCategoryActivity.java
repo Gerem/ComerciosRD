@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.comerciosrd.map.R;
 import com.comerciosrd.threads.SearchClientsTask;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -30,7 +30,7 @@ public class ClientByCategoryActivity extends Activity {
 		gridView = (GridView) findViewById(R.id.gridView1);
 		
 		// Setting background
-		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);		
+		Utils.setActionBarBackground(getActionBar(),CommonUtilities.MAIN_HEADER_COLOR);		
 		progressBarLL = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
 		
 		Bundle extras = getIntent().getExtras();

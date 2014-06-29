@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.comerciosrd.dto.Categoria;
 import com.comerciosrd.map.R;
-import com.comerciosrd.pojos.Categoria;
 
 import java.util.ArrayList;
 

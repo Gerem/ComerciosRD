@@ -2,21 +2,28 @@ package com.comerciosrd.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.comerciosrd.map.R;
+import com.comerciosrd.threads.GCMRegisterTask;
 import com.comerciosrd.threads.SearchCategoriesTask;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
+import com.comerciosrd.utils.ServerUtilities;
 import com.comerciosrd.utils.Utils;
+import com.comerciosrd.utils.WakeLocker;
+import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 @SuppressLint("NewApi")
@@ -42,7 +49,16 @@ public class CategoriesActivity extends Activity{
 		adView = (AdView)this.findViewById(R.id.adView);
 	    AdRequest adRequest = new AdRequest.Builder().build();
 	    adView.loadAd(adRequest);
-
+	    
+	    // Make sure the device has the proper dependencies.
+        GCMRegistrar.checkDevice(this);
+ 
+        // Make sure the manifest was properly set - comment out this line
+        // while developing the app, then uncomment it when it's ready.
+        GCMRegistrar.checkManifest(this);
+	    registerReceiver(mHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
+	    
+	    this.registerGCM();
 	}
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -58,7 +74,7 @@ public class CategoriesActivity extends Activity{
 			Utils.showToastMessage(getApplicationContext(), "No tiene conexión a internet, Trabajará en cache.");
 		
 		// Setting background
-		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),CommonUtilities.MAIN_HEADER_COLOR);
 		
 		return true;		
 	}
@@ -95,8 +111,61 @@ public class CategoriesActivity extends Activity{
     }
 
     @Override
-    public void onDestroy() {
-      adView.destroy();
-      super.onDestroy();
+    public void onDestroy() {		 
+	     try {
+	         unregisterReceiver(mHandleMessageReceiver);
+	         GCMRegistrar.onDestroy(this);
+	     } catch (Exception e) {
+	         Log.e("UnRegister Receiver Error", "> " + e.getMessage());
+	     }
+	      adView.destroy();
+	      super.onDestroy();
     }
+    private void registerGCM(){
+    	
+    	 // Get GCM registration id
+        String regId = GCMRegistrar.getRegistrationId(this);
+ 
+        // Check if regid already presents
+        if (regId.equals("")) {
+        	// Registration is not present, register now with GCM           
+            GCMRegistrar.register(this, CommonUtilities.SENDER_ID);
+        } else {
+            // Device is already registered on GCM
+            if (GCMRegistrar.isRegisteredOnServer(this)) {
+                // Skips registration.              
+                Toast.makeText(getApplicationContext(), "Already registered with GCM", Toast.LENGTH_LONG).show();
+            } else {
+                // Try to register again, but not in the UI thread.
+                // It's also necessary to cancel the thread onDestroy(),
+                // hence the use of AsyncTask instead of a raw thread.                
+               GCMRegisterTask gcmRegisterTask = new GCMRegisterTask(this, regId);
+               gcmRegisterTask.execute();
+            }
+        }
+    }
+    /**
+     * Receiving push messages
+     * */
+    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String newMessage = intent.getExtras().getString(CommonUtilities.EXTRA_MESSAGE);
+            // Waking up mobile if it is sleeping
+            WakeLocker.acquire(getApplicationContext());
+             
+            /**
+             * Take appropriate action on this message
+             * depending upon your app requirement
+             * For now i am just displaying it on the screen
+             * */
+             
+            // Showing received message
+                       
+            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+             
+            // Releasing wake lock
+            WakeLocker.release();
+        }
+    };
 }

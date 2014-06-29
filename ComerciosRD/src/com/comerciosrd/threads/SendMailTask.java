@@ -13,10 +13,10 @@ import android.os.AsyncTask;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.comerciosrd.dto.Localidad;
 import com.comerciosrd.map.R;
-import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 
 public class SendMailTask extends AsyncTask<Void, Void, Void>{
@@ -44,7 +44,7 @@ public class SendMailTask extends AsyncTask<Void, Void, Void>{
 	        postData.add(new BasicNameValuePair("correo", to));
 	        postData.add(new BasicNameValuePair("asunto", subject));
 	        postData.add(new BasicNameValuePair("cuerpo", body));
-			CallServices.sendToService(PropertiesConstants.API_URL + PropertiesConstants.API_SEND_MAIL_MODULE,postData);
+			CallServices.sendToService(CommonUtilities.API_URL + CommonUtilities.API_SEND_MAIL_MODULE,postData);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

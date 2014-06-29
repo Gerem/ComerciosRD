@@ -10,12 +10,12 @@ import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
+import com.comerciosrd.dto.Cliente;
+import com.comerciosrd.dto.Localidad;
 import com.comerciosrd.map.R;
-import com.comerciosrd.pojos.Cliente;
-import com.comerciosrd.pojos.Localidad;
 import com.comerciosrd.threads.AutoCompleteTask;
 import com.comerciosrd.threads.SendMailTask;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,7 +44,7 @@ public class NewLocationActivity extends FragmentActivity{
 		setContentView(R.layout.new_location);
 
 		// Setting background
-		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);		
+		Utils.setActionBarBackground(getActionBar(),CommonUtilities.MAIN_HEADER_COLOR);		
 					
 		locDesc = (EditText)this.findViewById(R.id.locationDesc);
 		locAddress = (EditText)this.findViewById(R.id.locAddres);
@@ -134,7 +134,7 @@ public class NewLocationActivity extends FragmentActivity{
 		body +="<p>Longitud: "	+ locationRequest.getLongitud()  + "</p></br>";
 		body +="<p>Latitud: "	+ locationRequest.getLatitud()  + "</p></br>";
 		
-		SendMailTask mailTask = new SendMailTask(body, PropertiesConstants.EMAIL_SUBJECT, PropertiesConstants.ADMIN_EMAIL,saveMenu,this);				
+		SendMailTask mailTask = new SendMailTask(body, CommonUtilities.EMAIL_SUBJECT, CommonUtilities.ADMIN_EMAIL,saveMenu,this);				
 		mailTask.execute();
 				
 		clean();

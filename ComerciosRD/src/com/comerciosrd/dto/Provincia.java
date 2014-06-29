@@ -1,4 +1,4 @@
-package com.comerciosrd.pojos;
+package com.comerciosrd.dto;
 
 import java.io.Serializable;
 

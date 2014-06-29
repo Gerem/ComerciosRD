@@ -1,4 +1,4 @@
-package com.comerciosrd.pojos;
+package com.comerciosrd.dto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,35 +9,33 @@ import java.io.Serializable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class Cliente implements Serializable {
+import com.comerciosrd.utils.Validations;
 
+public class Categoria implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private Long idClientePk;
-
-	private String nombreCliente;
-
+	private Long idCategoriaPk;
+	private String categoria;
 	transient Bitmap logo;
 
-	public Long getIdClientePk() {
-		return idClientePk;
+	public Long getIdCategoriaPk() {
+		return idCategoriaPk;
 	}
 
-	public void setIdClientePk(Long idClientePk) {
-		this.idClientePk = idClientePk;
+	public void setIdCategoriaPk(Long idCategoriaPk) {
+		this.idCategoriaPk = idCategoriaPk;
 	}
 
-	public String getNombreCliente() {
-		return nombreCliente;
+	public String getCategoria() {
+		return categoria;
 	}
 
-	public void setNombreCliente(String nombreCliente) {
-		this.nombreCliente = nombreCliente;
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
-
+	
 	public Bitmap getLogo() {
 		return logo;
 	}
@@ -64,14 +62,15 @@ public class Cliente implements Serializable {
 
 	private void readObject(ObjectInputStream ois) throws IOException,
 			ClassNotFoundException {
-		// Now, all again, deserializing - in the SAME ORDER!
-		// All non-transient fields
-		ois.defaultReadObject();
-		// All other fields that you serialized
-		byte[] image = (byte[]) ois.readObject();
-		if (image != null && image.length > 0) {
-			logo = BitmapFactory.decodeByteArray(image, 0, image.length);
+		if(Validations.validateIsNotNull(ois)){
+			// Now, all again, deserializing - in the SAME ORDER!
+			// All non-transient fields
+			ois.defaultReadObject();
+			// All other fields that you serialized
+			byte[] image = (byte[]) ois.readObject();
+			if (image != null && image.length > 0) {
+				logo = BitmapFactory.decodeByteArray(image, 0, image.length);
+			}
 		}
 	}
-
 }

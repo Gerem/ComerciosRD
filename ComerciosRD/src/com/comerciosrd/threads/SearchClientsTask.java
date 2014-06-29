@@ -17,10 +17,10 @@ import android.widget.LinearLayout;
 
 import com.comerciosrd.activities.ListSucursales;
 import com.comerciosrd.adapters.ClientsGridAdapter;
+import com.comerciosrd.dto.Cliente;
 import com.comerciosrd.map.R;
-import com.comerciosrd.pojos.Cliente;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 
 
@@ -51,8 +51,8 @@ public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 		}else if(Utils.isOnline(context)){
 			try {
 				JSONArray jsonArray = CallServices
-						.callService(PropertiesConstants.API_URL
-								+ PropertiesConstants.API_CLIENT_MODULE							
+						.callService(CommonUtilities.API_URL
+								+ CommonUtilities.API_CLIENT_MODULE							
 								+ "/?format=json&idCategoria=" + idCategory +"&idEstado=1");
 				data = new ArrayList<Cliente>();
 				for (int i = 0; i < jsonArray.length(); i++) {
@@ -61,7 +61,7 @@ public class SearchClientsTask extends AsyncTask<Void, Void, Void>{
 					cliente.setIdClientePk(obj.getLong("ID_CLIENTE_PK"));
 					cliente.setNombreCliente(obj.getString("NOMBRE_CLIENTE"));
 					//Getting LOGO
-					String clientLogoUrl = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
+					String clientLogoUrl = CommonUtilities.API_CLIENT_LOGO_PATH + obj.getString("LOGO"); 
 					Bitmap logoBM = Utils.drawableFromUrl(clientLogoUrl);
 					logoBM = Utils.getRoundedCornerBitmap(logoBM, 10);
 					cliente.setLogo(logoBM);

@@ -10,7 +10,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.comerciosrd.map.R;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 
 public class AutoCompleteTask extends AsyncTask<Void, Void, Void>{
 
@@ -26,7 +26,7 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, Void>{
 	protected Void doInBackground(Void... params) {
 		try {
 
-			JSONArray jsonArray = CallServices.callService(PropertiesConstants.API_URL + PropertiesConstants.API_CLIENT_MODULE + "/?format=json");
+			JSONArray jsonArray = CallServices.callService(CommonUtilities.API_URL + CommonUtilities.API_CLIENT_MODULE + "/?format=json");
 			autocompleteTexts = new String[jsonArray.length()];
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject obj = jsonArray.getJSONObject(i);

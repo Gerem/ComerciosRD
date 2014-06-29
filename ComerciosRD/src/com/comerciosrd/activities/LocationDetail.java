@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.comerciosrd.adapters.LocationDetailAdapter;
 import com.comerciosrd.map.R;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 import com.google.android.gms.ads.AdRequest;
@@ -31,7 +31,7 @@ public class LocationDetail extends Activity {
 		setContentView(R.layout.list_activity);
 		Bundle extras = getIntent().getExtras();
 		setView(extras);
-		Utils.setActionBarBackground(getActionBar(),PropertiesConstants.MAIN_HEADER_COLOR);
+		Utils.setActionBarBackground(getActionBar(),CommonUtilities.MAIN_HEADER_COLOR);
 		// Buscar AdView como recurso y cargar una solicitud.
 		adView = (AdView)this.findViewById(R.id.adView);
 	    AdRequest adRequest = new AdRequest.Builder().build();
@@ -41,16 +41,16 @@ public class LocationDetail extends Activity {
 	public void setView(Bundle extras) {
 		if (Validations.validateIsNotNull(extras)) {
 			//Consiguiendo campos..			
-			String nombreCliente = extras.getString(PropertiesConstants.CLIENT_NAME_FIELD);
-			String nombreCategoria = extras.getString(PropertiesConstants.CATEGORY_NAME_FIELD);
-			String email = extras.getString(PropertiesConstants.EMAIL_FIELD);
-			String descripcion = extras.getString(PropertiesConstants.DESCRIPTION_FIELD);
+			String nombreCliente = extras.getString(CommonUtilities.CLIENT_NAME_FIELD);
+			String nombreCategoria = extras.getString(CommonUtilities.CATEGORY_NAME_FIELD);
+			String email = extras.getString(CommonUtilities.EMAIL_FIELD);
+			String descripcion = extras.getString(CommonUtilities.DESCRIPTION_FIELD);
 			
-			final Double latitud = extras.getDouble(PropertiesConstants.LATITUDE_FIELD);
-			final Double longitud = extras.getDouble(PropertiesConstants.LONGITUDE_FIELD);
+			final Double latitud = extras.getDouble(CommonUtilities.LATITUDE_FIELD);
+			final Double longitud = extras.getDouble(CommonUtilities.LONGITUDE_FIELD);
 			
-			String telefono = extras.getString(PropertiesConstants.PHONE_FIELD);
-			String direccion = extras.getString(PropertiesConstants.ADDRESS_FIELD);
+			String telefono = extras.getString(CommonUtilities.PHONE_FIELD);
+			String direccion = extras.getString(CommonUtilities.ADDRESS_FIELD);
 			
 			String categoria = nombreCategoria;
 			final String[] content = { descripcion, telefono,

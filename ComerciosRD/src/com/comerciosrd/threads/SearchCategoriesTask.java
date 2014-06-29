@@ -18,10 +18,10 @@ import android.widget.LinearLayout;
 
 import com.comerciosrd.activities.ClientByCategoryActivity;
 import com.comerciosrd.adapters.CategoryGridAdapter;
+import com.comerciosrd.dto.Categoria;
 import com.comerciosrd.map.R;
-import com.comerciosrd.pojos.Categoria;
 import com.comerciosrd.utils.CallServices;
-import com.comerciosrd.utils.PropertiesConstants;
+import com.comerciosrd.utils.CommonUtilities;
 import com.comerciosrd.utils.Utils;
 import com.comerciosrd.utils.Validations;
 
@@ -35,8 +35,7 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 	private GridView gridView;
 	private CategoryGridAdapter customGridAdapter;
 	private boolean notOnlineNotCache=false;
-	public SearchCategoriesTask(Activity context, LinearLayout progressBarLL,
-			GridView gridView) {
+	public SearchCategoriesTask(Activity context, LinearLayout progressBarLL,GridView gridView) {
 		this.context = context;
 		this.progressBarLL = progressBarLL;
 		this.gridView = gridView;
@@ -44,18 +43,17 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		if(Utils.existFile(PropertiesConstants.OLD_CATEGORY_VIEW_NAME, context))
+		if(Utils.existFile(CommonUtilities.OLD_CATEGORY_VIEW_NAME, context))
 			Utils.clearCache(context);
 		
-		if(Utils.existFile(PropertiesConstants.CATEGORY_VIEW_NAME, context)){						
+		if(Utils.existFile(CommonUtilities.CATEGORY_VIEW_NAME, context)){						
 			//Searching data in cache
-			data = (ArrayList<Categoria>) Utils.getArrayListFromCache(PropertiesConstants.CATEGORY_VIEW_NAME, context);			
+			data = (ArrayList<Categoria>) Utils.getArrayListFromCache(CommonUtilities.CATEGORY_VIEW_NAME, context);			
 		}else if(Utils.isOnline(context)){
 			try {
-				JSONArray jsonArray = CallServices
-						.callService(PropertiesConstants.API_URL
-								+ PropertiesConstants.API_CATEGORY_MODULE
-								+ "/?format=json&indNegocios=1");
+				JSONArray jsonArray = CallServices.callService(CommonUtilities.API_URL
+											 				 + CommonUtilities.API_CATEGORY_MODULE
+											 				 + "/?format=json&indNegocios=1");
 				data = new ArrayList<Categoria>();
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject obj = jsonArray.getJSONObject(i);
@@ -64,7 +62,7 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 					categoria.setIdCategoriaPk(obj.getLong("ID_CATEGORIA_PK"));
 					
 					//Getting LOGO
-					String categoryImage = PropertiesConstants.API_CLIENT_LOGO_PATH + obj.getString("IMAGE"); 
+					String categoryImage = CommonUtilities.API_CLIENT_LOGO_PATH + obj.getString("IMAGE"); 
 					if(Validations.validateIsNotNullAndNotEmpty(obj.getString("IMAGE"))){
 						categoria.setLogo(Utils.drawableFromUrl(categoryImage));					
 						data.add(categoria);
@@ -95,7 +93,7 @@ public class SearchCategoriesTask extends AsyncTask<Void, Void, Void> {
 			Utils.showToastMessage(context, "Necesita de una conexión a internet para cargar.");
 			return;
 		}
-		Utils.saveArrayListToMemCache(PropertiesConstants.CATEGORY_VIEW_NAME, data, context);
+		Utils.saveArrayListToMemCache(CommonUtilities.CATEGORY_VIEW_NAME, data, context);
 		
 		customGridAdapter = new CategoryGridAdapter(context, R.layout.row_grid,data);
 
